@@ -1,8 +1,9 @@
 import { View, Text } from 'react-native'
-import React from 'react'
-import { useRoute } from '@react-navigation/native';
+import React, { useLayoutEffect } from 'react'
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const RestaurantScreen = () => {
+  const navigation = useNavigation();
 
     const {
       params: {
@@ -18,6 +19,12 @@ const RestaurantScreen = () => {
           lat,
       }
     } = useRoute();
+
+    useLayoutEffect(() => {
+      navigation.setOptions({
+        headerShown: false
+      });
+    }, [])
 
   return (
     <View>
