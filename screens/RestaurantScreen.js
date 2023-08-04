@@ -16,6 +16,7 @@ import {
   QuestionMarkCircleIcon,
   StarIcon,
 } from "react-native-heroicons/solid";
+import DishRow from "../components/DishRow";
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
@@ -85,6 +86,25 @@ const RestaurantScreen = () => {
           </Text>
           <ChevronRightIcon color="#00CCBB" />
         </TouchableOpacity>
+      </View>
+
+      <View>
+        <Text className="font-bold text-xl px-4 pt-6 mb-3">Menu</Text>
+
+        {dishes.length > 0 ? (
+          dishes.map((dish) => (
+            <DishRow
+              key={dish._id}
+              id={dish._id}
+              name={dish.name}
+              description={dish.short_description}
+              price={dish.price}
+              image={dish.image}
+            />
+          ))
+        ) : (
+          <Text>No dishes available</Text>
+        )}
       </View>
     </ScrollView>
   );
