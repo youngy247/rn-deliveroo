@@ -1,5 +1,12 @@
-import { View, Text, SafeAreaView, Image, TextInput, ScrollView } from "react-native";
-import React, { useLayoutEffect } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  TextInput,
+  ScrollView,
+} from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   ChevronDownIcon,
@@ -9,9 +16,11 @@ import {
 } from "react-native-heroicons/outline";
 import Categories from "../components/Categories";
 import FeaturedRow from "../components/FeaturedRow";
+import sanityClient from "../sanity";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const [featuedCategories, setFeaturedCategories] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -19,9 +28,27 @@ const HomeScreen = () => {
     });
   }, []);
 
+  useEffect(() => {
+    sanityClient
+      .fetch(
+        `
+    *[_type == "featured"] {
+      ...,
+      restaurants[]->{
+        ...,
+        dishes[]-> 
+      }
+}`
+      )
+      .then((data) => {
+        setFeaturedCategories(data)
+      });
+  }, []);
+
+
   return (
     <SafeAreaView className="bg-white pt-5">
-        {/* Header */}
+      {/* Header */}
       <View className="flex-row pb-3 items-center mx-4 space-x-2">
         <Image
           source={{
@@ -39,8 +66,8 @@ const HomeScreen = () => {
         </View>
         <UserIcon size={35} color="#00CCBB" />
       </View>
-        
-        {/* Search Bar */}
+
+      {/* Search Bar */}
       <View className="flex-row items-center space-x-2 pb-2 mx-4">
         <View className="flex-row flex-1 space-x-2 bg-gray-200 p-3">
           <MagnifyingGlassIcon color="gray" size={20} />
@@ -52,8 +79,8 @@ const HomeScreen = () => {
         <AdjustmentsHorizontalIcon color="#00CCBB" />
       </View>
 
-        {/* Body */}
-      <ScrollView 
+      {/* Body */}
+      <ScrollView
         className="bg-gray-100"
         contentContainerStyle={{
           paddingBottom: 100,
@@ -63,25 +90,15 @@ const HomeScreen = () => {
         <Categories />
 
         {/* Featured */}
-        <FeaturedRow 
-          id="123"
-          title="Featured"
-          description="Paid placements from our partners"
-        />
 
-        {/* Tasty Discounts */}
-        <FeaturedRow 
-          id="1234"
-          title="Tasty Discounts"
-          description="Everyone's been enjoying these juicy discounts!"
+        {featuedCategories?.map((category) => (
+        <FeaturedRow
+          key={category._id}
+          id={category._id}
+          title={category.name}
+          description={category.short_description}
         />
-
-        {/* Offers near you */}
-        <FeaturedRow 
-          id="12345"
-          title="Offers near you!"
-          description="Why not support your local restaurants tonight!"
-        />
+        ))}
 
       </ScrollView>
     </SafeAreaView>
