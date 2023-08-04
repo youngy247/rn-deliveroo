@@ -96,7 +96,7 @@ const RestaurantScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <View>
+        <View className="pb-36">
           <Text className="font-bold text-xl px-4 pt-6 mb-3">Menu</Text>
 
           {dishes.length > 0 ? (
