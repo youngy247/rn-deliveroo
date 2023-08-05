@@ -4,13 +4,16 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { selectRestaurant } from "../features/restaurantSlice";
-import { selectBasketItems } from "../features/basketSlice";
+import { removeFromBasket, selectBasketItems } from "../features/basketSlice";
 import { XCircleIcon } from "react-native-heroicons/solid";
+import { urlFor } from "../sanity";
+import Currency from "react-currency-formatter";
 
 const BasketScreen = () => {
   const navigation = useNavigation();
@@ -68,6 +71,32 @@ const BasketScreen = () => {
             <Text className="text-[#00CCBB]">Change</Text>
           </TouchableOpacity>
         </View>
+
+        <ScrollView className="divide-y divide-gray-200">
+          {Object.entries(groupedItemsInBasket).map(([key, items]) => (
+            <View key={key} className="flex-row items-center space-x-3 bg-white py-2 px-5">
+              <Text className="text-[#00CCBB]">{items.length} x</Text>
+              <Image 
+              source={{ uri: urlFor(items[0]?.image).url() }}
+              className="h-12 w-12 rounded-full"
+              />
+              <Text className="flex-1">{items[0]?.name}</Text>
+
+              <Text>
+                <Currency quantity={items[0]?.price} currency="GBP" />
+              </Text>
+
+              <TouchableOpacity>
+                <Text
+                  className="text-[#00CCBB] text-xs"
+                  onPress={() => dispatch(removeFromBasket({ id: key }))}
+                >
+                  Remove
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
