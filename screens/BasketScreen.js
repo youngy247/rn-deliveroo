@@ -120,7 +120,10 @@ const BasketScreen = () => {
             <Currency quantity={basketTotal + 5.99} currency="GBP" />
             </Text>
           </View>
-
+          
+          <TouchableOpacity className="bg-[#00CCBB] p-4 rounded-lg">
+            <Text className="text-center text-white text-lg font-bold">Place Order</Text>
+          </TouchableOpacity>
 
         </View>
       </View>
